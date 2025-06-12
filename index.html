@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羽洛Luo｜Minecraft GUI资源包</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #00a7f7;
+            --accent-color: #00a7f7;
+            --highlight-color: #ff6b6b;
+            --minecraft-green: #5DBE62;
+            --minecraft-dark: #3B8520;
+            --text-light: #ffffff;
+            --text-gray: #cccccc;
+            --text-dark: #333333;
+            --bg-dark: #0d0d17;
+            --bg-medium: #101022;
+            --bg-light: #0a0a1a;
+            --card-bg: rgba(20, 20, 40, 0.7);
+            --download-modal-bg: rgba(10, 10, 25, 0.95);
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-medium), var(--bg-light));
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-top: 70px;
+            background-attachment: fixed;
+        }
+        
+        /* 导航栏样式 */
+        header.top {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(0, 167, 247, 0.3);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-light);
+        }
+        
+        .nav-links a.active {
+            color: var(--text-light);
+        }
+        
+        .nav-links a.active::after,
+        .nav-links a:hover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            margin: 5px 0 20px;
+        }
+        
+        /* 主内容区域 */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .centered-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 167, 247, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        h2, h3, h4 {
+            color: var(--text-light);
+        }
+        
+        h4 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: transparent;
+            color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 167, 247, 0.4);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        /* 资源包页面样式 */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 167, 247, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            border-color: var(--accent-color);
+        }
+        
+        .resource-version {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: white;
+            z-index: 3;
+        }
+        
+        .resource-info {
+            padding: 20px;
+        }
+        
+        .resource-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .resource-title i {
+            color: var(--accent-color);
+        }
+        
+        .resource-desc {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            min-height: 48px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 15px 0;
+            padding-left: 10px;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* 公告面板 */
+        .announcements {
+            background: rgba(61, 133, 32, 0.15);
+            border: 1px solid rgba(93, 190, 98, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--minecraft-green);
+        }
+        
+        /* 下载弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .download-modal {
+            background: var(--download-modal-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 167, 247, 0.3);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+        
+        .modal-overlay.active .download-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--text-light);
+        }
+        
+        .download-options {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .download-option {
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 167, 247, 0.2);
+        }
+        
+        .download-option:hover {
+            background: rgba(40, 40, 60, 0.8);
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .download-option h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .download-option h4 i {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+        
+        .download-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .download-link {
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .download-link:hover {
+            background: rgba(0, 167, 247, 0.8);
+        }
+        
+        .extract-code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .extract-code span {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background: rgba(5, 5, 15, 0.9);
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 167, 247, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+}
+        
+        .donate-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .donate-btn {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .donate-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+        }
+        
+        .copyright {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 25px;
+        }
+        
+        .copyright a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .copyright a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .nav-links a {
+                font-size: 1rem;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .donate-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            body {
+                padding-top: 110px;
+            }
+        }
+        
+        /* 添加一些动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+		/* 新增样式：下载选项布局优化 */
+		.download-selection {
+			width: 100%;
+			margin-bottom: 15px;
+		}
+		
+		.download-select {
+			width: 100%;
+			padding: 10px;
+			border-radius: 8px;
+			background: rgba(30, 30, 50, 0.8);
+			color: white;
+			border: 1px solid rgba(0, 167, 247, 0.3);
+			font-size: 0.95rem;
+		}
+
+		.full-width-btn {
+			width: 100%;
+			text-align: center;
+			padding: 10px;
+			display: block;
+			margin-top: 10px;
+		}
+		
+		/* 教程按钮样式 */
+		.tutorial-btn {
+			display: inline-flex;
+			align-items: center;
+			background: rgba(93, 190, 98, 0.2);
+			color: #5DBE62;
+			padding: 10px 20px;
+			border-radius: 50px;
+			text-decoration: none;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			margin-top: 10px;
+			border: 1px solid rgba(93, 190, 98, 0.3);
+		}
+
+		.tutorial-btn:hover {
+			background: rgba(93, 190, 98, 0.4);
+			transform: translateY(-3px);
+		}
+
+		.tutorial-btn i {
+			margin-right: 8px;
+		}
+		
+</style>
+
+</head>
+<body>
+    <header class="top">
+        <nav>
+            <a href="#" class="logo">羽洛<span>Luo</span></a>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-page="home">首页</a>
+                <a href="#" class="nav-link" data-page="resources">资源包</a>
+            </div>
+        </nav>
+    </header>
+    
+    <hr>
+    
+    <main>
+        <!-- 首页内容 -->
+        <div id="home" class="page active">
+            <div class="centered-card">
+                <h4 class="floating">欢迎来到羽洛Luo的Minecraft资源包主页</h4>
+                <p>目前仅有透明GUI资源包</p>
+                <a href="#" class="btn switch-page" data-page="resources">
+                    <i class="fas fa-download"></i>获取资源包
+                </a>
+            </div>
+            
+            <!-- 公告 -->
+            <div class="announcements">
+                <div class="announcement-header">
+                    <i class="fas fa-bullhorn"></i>
+                    <h3>网站公告</h3>
+                </div>
+                <p>所有资源包均可免费下载使用，如果您喜欢我的作品，欢迎在爱发电上支持我的创作！<br>欢迎将我制作的资源包放到你的整合包中！无需提前告知，发布后@我或者私信即可<br>无授权禁止商用，商用请私信作者</p>
+                <p style="margin-top: 10px; color: var(--minecraft-green);">
+                    <i class="fas fa-tools"></i> 摸鱼中~
+                </p>
+            </div>
+        </div>
+        
+        <!-- 资源包页面 -->
+        <div id="resources" class="page">
+            <h2 style="text-align: center; margin-bottom: 10px;"><i class="fas fa-cubes"></i> Minecraft 透明GUI资源包</h2>
+            <p style="text-align: center; color: var(--text-gray); margin-bottom: 30px;">[炎]透明界面 Yan Transparent GUI系列</p>
+            
+            <div class="announcements" style="margin-top: 30px;">
+                <div class="announcement-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>下载说明</h3>
+                </div>
+                <p>提供三种下载方式：直链下载（推荐）、百度网盘、123云盘。1.20+版本仅支持直链下载。</p>
+            </div>
+            
+            <div class="resources-grid">
+            
+<!-- 适用于1.20.x的透明界面 -->
+                <div class="resource-card" 
+                     data-version="1.20.x"
+                     data-download-links='{
+                         "direct": "https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.20/Yan.Transparent.GUI.For.1.20.4.zip",
+                         "baidu": {
+                             "url": "#",
+                             "code": "#"
+                         },
+                         "cloud123": {
+                             "url": "#",
+                             "code": "#"
+                         }
+                     }'>
+                    <div class="resource-info">
+                        <h3 class="resource-title"><i class="fas fa-cube"></i>透明界面<br>Transparent GUI</h3>
+                        <p class="resource-desc">适用于1.20.x-1.21.x的透明界面</p>
+                        <div class="resource-version">1.20.x/1.21.x</div>
+                        <button class="btn show-download-options" style="font-size: 0.9rem; padding: 10px 20px;">
+                            <i class="fas fa-download"></i> 下载资源包
+                        </button>
+						 <a href="https://www.bilibili.com/video/BV1eYbVefEq1/" class="btn video-link" target="_blank" style="font-size: 0.9rem; padding: 10px 20px;">
+							<i class="fas fa-video"></i>介绍视频
+						</a>
+                    </div>
+                </div>
+                
+<!-- 适用于1.19.x的透明界面 -->
+				<div class="resource-card" 
+					data-version="1.19.x"
+					data-download-links='{
+						"direct": [
+								{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.19/Yan+Transparent+GUI+Grey+For+1.19+.zip","name":"灰色"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.19/Yan+Transparent+GUI+Grey+For+1.19+.Conceptver.zip","name":"灰色概念"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.19/Yan+Transparent+GUI+Blue+For1.19+.zip","name":"蓝色"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.19/Yan+Transparent+GUI+Blue+For1.19+.Concept.ver.zip","name":"蓝色概念"}
+						],
+						"baidu": {
+							"url": "https://pan.baidu.com/s/1hphcRLLGZb9Y7eA_1Mwq6Q?pwd=p55t",
+							"code": "p55t"
+						},
+						"cloud123": {
+							"url": "https://www.123865.com/s/vGNLVv-UGhjv",
+							"code": "dz8H"
+						}
+					}'>
+                    <div class="resource-info">
+                        <h3 class="resource-title"><i class="fas fa-cube"></i>透明界面<br>Transparent GUI</h3>
+                        <p class="resource-desc">适用于1.19.x的透明界面</p>
+                        <div class="resource-version">1.19.x</div>
+                        <button class="btn show-download-options" style="font-size: 0.9rem; padding: 10px 20px;">
+                            <i class="fas fa-download"></i> 下载资源包
+                        </button>
+						 <a href="https://www.bilibili.com/video/BV1xY4y1Z75o/" class="btn video-link" target="_blank" style="font-size: 0.9rem; padding: 10px 20px;">
+							<i class="fas fa-video"></i>介绍视频
+						</a>
+                    </div>
+                </div>
+                
+<!-- 适用于1.18-的透明界面 -->
+				<div class="resource-card" 
+					data-version="1.18.x"
+					data-download-links='{
+						"direct": [
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.18/Yan+Transparent+GUI+Grey+For1.18-.zip","name":"灰色"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.18/Yan+Transparent+GUI+Grey+For+1.18-.Conceptver.zip","name":"灰色概念"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.18/Yan+Transparent+GUI+Blue+For1.18-.zip","name":"蓝色"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/New1.18/Yan+Transparent+GUI+Blue+For1.18-.Conceptver.zip","name":"蓝色概念"}
+						],
+						"baidu": {
+							"url": "https://pan.baidu.com/s/1hicMIR4EQkR96CHw97DKFA?pwd=ghw8",
+							"code": "ghw8"
+						},
+						"cloud123": {
+							"url": "https://www.123865.com/s/vGNLVv-uGhjv",
+							"code": "jkWA"
+						}
+					}'>
+                    <div class="resource-info">
+                        <h3 class="resource-title"><i class="fas fa-cube"></i>透明界面<br>Transparent GUI</h3>
+                        <p class="resource-desc">适用于1.18-的透明界面</p>
+                        <div class="resource-version">1.18-</div>
+                        <button class="btn show-download-options" style="font-size: 0.9rem; padding: 10px 20px;">
+                            <i class="fas fa-download"></i> 下载资源包
+                        </button>
+						 <a href="https://www.bilibili.com/video/BV1xY4y1Z75o/" class="btn video-link" target="_blank" style="font-size: 0.9rem; padding: 10px 20px;">
+							<i class="fas fa-video"></i>介绍视频
+						</a>
+                    </div>
+                </div>
+                
+<!-- 1.8PVP -->
+                <div class="resource-card" 
+                     data-version="1.8.x"
+                     data-download-links='{
+                         "direct": "https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/usable/Yan.PVP.Transparent.Gui.1.8.zip",
+                         "baidu": {
+                             "url": "https://pan.baidu.com/s/1ORGsjk_mIb8Qjtprprq9Jg?pwd=nmv1",
+                             "code": "nmv1"
+                         },
+                         "cloud123": {
+                             "url": "https://www.123865.com/s/vGNLVv-KGhjv",
+                             "code": "Eubw"
+                         }
+                     }'>
+                    <div class="resource-info">
+                        <h3 class="resource-title"><i class="fas fa-cube"></i>透明界面<br>Transparent GUI PVP专属版</h3>
+                        <p class="resource-desc">PVP专属版，仅适用于1.8</p>
+                        <div class="resource-version">1.8.x</div>
+                        <button class="btn show-download-options" style="font-size: 0.9rem; padding: 10px 20px;">
+                            <i class="fas fa-download"></i> 下载资源包
+                        </button>
+						 <a href="https://www.bilibili.com/video/BV1zh4y1r7Sq/" class="btn video-link" target="_blank" style="font-size: 0.9rem; padding: 10px 20px;">
+							<i class="fas fa-video"></i>介绍视频
+						</a>
+                    </div>
+                </div>
+                
+<!-- 1.8PVP扩展 -->
+                <div class="resource-card" 
+                     data-version="1.8.x.tool"
+                     data-download-links='{
+                         "direct": "https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/usable/Yan.PVP.Shorter.Sword+Fishing.Rod.1.8.zip",
+                         "baidu": {
+                             "url": "https://pan.baidu.com/s/1cOcAotenbuMPizRKU-kwBw?pwd=a4ne",
+                             "code": "a4ne"
+                         },
+                         "cloud123": {
+                             "url": "https://www.123865.com/s/vGNLVv-0Ghjv",
+                             "code": "rdrw"
+                         }
+                     }'>
+                    <div class="resource-info">
+                        <h3 class="resource-title"><i class="fas fa-cube"></i>Transparent GUI PVP专属版<br>更短的工具扩展包</h3>
+                        <p class="resource-desc">PVP专属版，仅适用于1.8<br>更短的工具扩展包（短剑+钓鱼竿）</p>
+                        <div class="resource-version">1.8.x</div>
+                        <button class="btn show-download-options" style="font-size: 0.9rem; padding: 10px 20px;">
+                            <i class="fas fa-download"></i> 下载资源包
+                        </button>
+						 <a href="https://www.bilibili.com/video/BV1zh4y1r7Sq/" class="btn video-link" target="_blank" style="font-size: 0.9rem; padding: 10px 20px;">
+							<i class="fas fa-video"></i>介绍视频
+						</a>
+                    </div>
+                </div>
+                
+<!-- 适用于old的透明界面 -->
+				<div class="resource-card" 
+					data-version="old"
+					data-download-links='{
+						"direct": [
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/Old/1.18V1.0.zip","name":"V1.0"},
+							{"url":"https://github.com/Gamesluo/Luo-s-Transparent-GUI/releases/download/Old/1.18V1.1.zip","name":"V1.1"}
+						],
+						"baidu": {
+							"url": "https://pan.baidu.com/s/19G3CB4YoAlB6GMf_9fp_MA?pwd=n7v9",
+							"code": "n7v9"
+						},
+						"cloud123": {
+							"url": "https://www.123865.com/s/vGNLVv-8Ghjv",
+							"code": "MRci"
+						}
+					}'>
+                    <div class="resource-info">
+                        <h3 class="resource-title"><i class="fas fa-cube"></i>透明界面<br>Transparent GUI</h3>
+                        <p class="resource-desc">旧版的资源包，不推荐下载</p>
+                        <div class="resource-version">Old</div>
+                        <button class="btn show-download-options" style="font-size: 0.9rem; padding: 10px 20px;">
+                            <i class="fas fa-download"></i> 下载资源包
+                        </button>
+						 <a href="https://www.bilibili.com/video/BV17g41167kS/" class="btn video-link" target="_blank" style="font-size: 0.9rem; padding: 10px 20px;">
+							<i class="fas fa-video"></i>介绍视频
+						</a>
+                    </div>
+                </div>
+                
+                <!-- 此处添加卡片 -->
+                
+            </div>
+            
+            <!-- 在资源包页面的常见问题部分添加以下代码 -->
+		<div style="text-align: center; margin-top: 40px; padding: 30px; background: var(--card-bg); border-radius: 15px; border: 1px solid rgba(0, 167, 247, 0.2);">
+			<h3><i class="fas fa-question-circle"></i> 常见问题</h3>
+			<div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+				<div style="text-align: left; max-width: 500px;">
+					<p style="margin: 15px 0;"><strong>Q: 如何安装资源包？</strong><br>
+					A: 下载ZIP文件后，在游戏选项->资源包中打开资源包文件夹，放入后选择即可使用。</p>
+					<!-- 添加教程跳转按钮 -->
+					<a href="https://www.bilibili.com/opus/527528503439794977" class="tutorial-btn" target="_blank">
+						<i class="fas fa-graduation-cap"></i> 查看详细安装教程
+					</a>
+					
+					<p style="margin: 15px 0;"><strong>Q: 透明界面资源包会影响游戏性能吗？</strong><br>
+					A: 由于透明界面资源包主要修改界面元素，对游戏性能影响很小。</p>
+				
+					<p style="margin: 15px 0;"><strong>Q: 同时使用多个资源包时没有效果怎么办？</strong><br>
+					A: 请将本包放置于最顶层</p>
+				</div>
+			</div>
+		</div>
+    </main>
+    
+    <!-- 1.20+下载弹窗 -->
+    <div class="modal-overlay">
+        <div class="download-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">选择下载方式</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            
+            <div class="download-options">
+                <!-- 直链下载选项 -->
+                <div class="download-option" id="direct-option">
+                    <h4><i class="fas fa-bolt"></i> 直链下载</h4>
+                    <p>推荐的下载方式，GitHub可能国内无法访问，需要借助一些其他工具</p>
+                    <div class="download-info">
+                        <a href="#" class="download-link direct-download" target="_blank">
+                            立即下载
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 百度网盘选项 -->
+                <div class="download-option" id="baidu-option">
+                    <h4><i class="fab fa-baidu"></i> 百度网盘</h4>
+                    <p>国内主流网盘，适合长期保存</p>
+                    <div class="download-info">
+                        <a href="#" class="download-link baidu-download" target="_blank">
+                            前往下载
+                        </a>
+                        <div class="extract-code">
+                            提取码: <span class="baidu-code">填写提取码</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 123云盘选项 -->
+                <div class="download-option" id="cloud123-option">
+                    <h4><i class="fas fa-cloud-download-alt"></i> 123云盘</h4>
+                    <p>高速下载不限速，无需客户端</p>
+                    <div class="download-info">
+                        <a href="#" class="download-link cloud123-download" target="_blank">
+                            前往下载
+                        </a>
+                        <div class="extract-code">
+                            提取码: <span class="cloud123-code">填写提取码</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="donate-links">
+                <a href="https://space.bilibili.com/72919100" class="donate-btn" target="_blank" title="Bilibili">
+                    <i class="fab fa-bilibili"></i> B站主页
+                </a>
+                <a href="https://afdian.com/a/Games_luo" class="donate-btn" target="_blank" title="爱发电">
+                    <i class="fas fa-donate"></i> 爱发电支持
+                </a>
+                <a href="mailto:Yanlgames@outlook.com" class="donate-btn">
+                    <i class="fas fa-envelope"></i> 联系作者
+                </a>
+            </div>
+            
+            <div class="copyright">
+                <p>所有GUI修改包版权归羽洛Luo所有，未经授权禁止用于商业用途</p>
+                <p>©2025 羽洛Luo - All Rights Reserved. | Crafted for Minecraft Players</p>
+            </div>
+        </div>
+    </footer>
+
+
+	<script>
+    // 页面切换功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const switchLinks = document.querySelectorAll('.switch-page');
+        const pages = document.querySelectorAll('.page');
+        
+        // 切换页面函数
+        function switchPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+        
+        // 导航链接点击事件
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                switchPage(pageId);
+            });
+        });
+        
+        // 页面内链接点击事件 - 修复页面切换
+        switchLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // 检查是否是介绍视频链接
+                if(this.classList.contains('video-link')) {
+                    // 视频链接直接打开，不处理页面切换
+                    return;
+                }
+            
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                switchPage(pageId);
+            });
+        });
+        
+        // 下载选项弹窗
+        const downloadBtns = document.querySelectorAll('.show-download-options');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const closeModal = document.querySelector('.close-modal');
+        
+        // 获取下载选项容器
+        const directOption = document.getElementById('direct-option');
+        const baiduOption = document.getElementById('baidu-option');
+        const cloud123Option = document.getElementById('cloud123-option');
+        
+        // 用于存储原始下载选项模板
+        const originalDirectOption = directOption.innerHTML;
+        
+        downloadBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 获取当前资源包信息
+                const card = this.closest('.resource-card');
+                const version = card.getAttribute('data-version');
+                const downloadLinks = JSON.parse(card.getAttribute('data-download-links'));
+                
+                // 恢复直链下载容器到原始状态
+                directOption.innerHTML = originalDirectOption;
+                
+                // 获取直链下载容器
+                const directDownloadContainer = directOption.querySelector('.download-info');
+                
+                // 清除现有内容
+                directDownloadContainer.innerHTML = '';
+                
+                // 处理直链下载选项
+                if (Array.isArray(downloadLinks.direct)) {
+                    // 创建选择框容器
+                    const selectContainer = document.createElement('div');
+                    selectContainer.className = 'download-selection';
+                    
+                    // 创建下拉选择框
+                    const select = document.createElement('select');
+                    select.className = 'download-select';
+                    
+                    downloadLinks.direct.forEach((link, index) => {
+                        const option = document.createElement('option');
+                        option.value = link.url;
+                        option.textContent = link.name || `下载文件 ${index + 1}`;
+                        select.appendChild(option);
+                    });
+                    
+                    // 创建下载按钮
+                    const downloadButton = document.createElement('a');
+                    downloadButton.className = 'download-link full-width-btn';
+                    downloadButton.target = '_blank';
+                    downloadButton.textContent = '立即下载';
+                    
+                    // 设置默认选择
+                    downloadButton.href = select.options[0].value;
+                    
+                    // 当下拉菜单变化时更新下载链接
+                    select.addEventListener('change', function() {
+                        downloadButton.href = this.value;
+                    });
+                    
+                    // 将元素添加到容器
+                    selectContainer.appendChild(select);
+                    directDownloadContainer.appendChild(selectContainer);
+                    directDownloadContainer.appendChild(downloadButton);
+                } else {
+                    // 单个直链文件 - 显示简单下载按钮
+                    const downloadButton = document.createElement('a');
+                    downloadButton.className = 'download-link full-width-btn';
+                    downloadButton.href = downloadLinks.direct;
+                    downloadButton.target = '_blank';
+                    downloadButton.textContent = '立即下载';
+                    
+                    directDownloadContainer.appendChild(downloadButton);
+                }
+                
+                // 更新百度网盘信息 - 修复选择器
+                const baiduDownloadLink = baiduOption.querySelector('.download-link.baidu-download');
+                const baiduCodeSpan = baiduOption.querySelector('.baidu-code');
+                baiduDownloadLink.href = downloadLinks.baidu.url;
+                baiduCodeSpan.textContent = downloadLinks.baidu.code;
+                
+                // 更新123云盘信息 - 修复选择器
+                const cloud123DownloadLink = cloud123Option.querySelector('.download-link.cloud123-download');
+                const cloud123CodeSpan = cloud123Option.querySelector('.cloud123-code');
+                cloud123DownloadLink.href = downloadLinks.cloud123.url;
+                cloud123CodeSpan.textContent = downloadLinks.cloud123.code;
+                
+                // 根据版本显示不同的下载选项 - 修复版本判断逻辑
+                if (version.startsWith("1.20") || version === "1.21.x" || version === "old") {
+                    // 仅显示直链下载
+                    baiduOption.style.display = 'none';
+                    cloud123Option.style.display = 'none';
+                } else {
+                    // 显示所有选项
+                    baiduOption.style.display = 'block';
+                    cloud123Option.style.display = 'block';
+                }
+                
+                modalOverlay.classList.add('active');
+            });
+        });
+        
+        // 关闭弹窗
+        closeModal.addEventListener('click', function() {
+            modalOverlay.classList.remove('active');
+        });
+        
+        // 点击弹窗外部关闭
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+        
+        // 添加页面切换动画效果
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.resource-card').forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    });
+	</script>
+
+</body>
+</html>
