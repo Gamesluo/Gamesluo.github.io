@@ -380,10 +380,11 @@
         }
         
         .download-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+			display: flex;
+			flex-direction: column; /* 改为垂直排列 */
+			gap: 12px; /* 元素间距 */
+		}
+
         
         .download-link {
             background: var(--accent-color);
@@ -535,15 +536,18 @@
 			margin-bottom: 15px;
 		}
 		
-		.download-select {
-			width: 100%;
-			padding: 10px;
-			border-radius: 8px;
-			background: rgba(30, 30, 50, 0.8);
-			color: white;
-			border: 1px solid rgba(0, 167, 247, 0.3);
-			font-size: 0.95rem;
-		}
+		/* 选择框样式 */
+			.download-select {
+				width: 100%;
+				padding: 12px 15px;
+				border-radius: 8px;
+				background: rgba(30, 30, 50, 0.8);
+				color: white;
+				border: 1px solid rgba(0, 167, 247, 0.3);
+				font-size: 1rem;
+				outline: none;
+				transition: all 0.3s ease;
+			}
 
 		.full-width-btn {
 			width: 100%;
@@ -577,6 +581,89 @@
 			margin-right: 8px;
 		}
 		
+		/* 复制提示样式 */
+		.copy-notification {
+			position: fixed;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: rgba(30, 215, 96, 0.9);
+			color: white;
+			padding: 10px 20px;
+			border-radius: 5px;
+			z-index: 3000;
+			box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+			font-weight: 600;
+			animation: fadeInOut 1.5s ease forwards;
+			display: none;
+		}
+
+		@keyframes fadeInOut {
+			0% { opacity: 0; top: 0; }
+			10% { opacity: 1; top: 20px; }
+			90% { opacity: 1; top: 20px; }
+			100% { opacity: 0; top: 0; }
+		}
+
+		/* 提取码区域添加鼠标指针效果 */
+		.copy-code {
+			cursor: pointer;
+			transition: all 0.3s ease;
+			position: relative;
+		}
+
+		.copy-code:hover {
+			background: rgba(255, 255, 255, 0.15);
+		}
+
+		.copy-code:hover:after {
+			content: '点击复制';
+			position: absolute;
+			right: -70px;
+			background: rgba(0, 167, 247, 0.8);
+			color: white;
+			padding: 2px 8px;
+			border-radius: 4px;
+			font-size: 0.8rem;
+		}
+		
+		.download-select:focus {
+				border-color: var(--accent-color);
+				box-shadow: 0 0 0 2px rgba(0, 167, 247, 0.2);
+			}
+
+			/* 全宽按钮样式 */
+			.full-width-btn {
+				width: 100%;
+				text-align: center;
+				padding: 12px;
+				display: block;
+				background: var(--accent-color);
+				color: white;
+				border-radius: 8px;
+				border: none;
+				font-weight: 600;
+				font-size: 1rem;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+
+			.full-width-btn:hover {
+				background: rgba(0, 167, 247, 0.8);
+				transform: translateY(-2px);
+				box-shadow: 0 5px 15px rgba(0, 167, 247, 0.3);
+			}
+
+			/* 下载链接样式优化 */
+			.download-link {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 10px 15px;
+				border-radius: 8px;
+				text-align: center;
+			}
+
 </style>
 
 </head>
@@ -610,7 +697,8 @@
                     <i class="fas fa-bullhorn"></i>
                     <h3>网站公告</h3>
                 </div>
-                <p>所有资源包均可免费下载使用，如果您喜欢我的作品，欢迎在爱发电上支持我的创作！<br>欢迎将我制作的资源包放到你的整合包中！无需提前告知，发布后@我或者私信即可<br>无授权禁止商用，商用请私信作者</p>
+                <p>大部分资源包可免费下载使用，如果您喜欢我的作品，欢迎在爱发电上支持我的创作！<br>欢迎将我制作的免费资源包放到你的整合包中！无需提前告知，发布后@我或者私信即可<br>无授权禁止商用，商用请私信作者</p>
+                <p>网站持续更新中</p>
                 <p style="margin-top: 10px; color: var(--minecraft-green);">
                     <i class="fas fa-tools"></i> 摸鱼中~
                 </p>
@@ -811,7 +899,6 @@
                 
             </div>
             
-            <!-- 在资源包页面的常见问题部分添加以下代码 -->
 		<div style="text-align: center; margin-top: 40px; padding: 30px; background: var(--card-bg); border-radius: 15px; border: 1px solid rgba(0, 167, 247, 0.2);">
 			<h3><i class="fas fa-question-circle"></i> 常见问题</h3>
 			<div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
@@ -833,7 +920,7 @@
 		</div>
     </main>
     
-    <!-- 1.20+下载弹窗 -->
+    <!-- 下载弹窗 -->
     <div class="modal-overlay">
         <div class="download-modal">
             <div class="modal-header">
@@ -855,29 +942,29 @@
                 
                 <!-- 百度网盘选项 -->
                 <div class="download-option" id="baidu-option">
-                    <h4><i class="fab fa-baidu"></i> 百度网盘</h4>
-                    <p>国内主流网盘，适合长期保存</p>
+                    <h4><i class="fas fa-cloud-download-alt"></i> 百度网盘</h4>
+                    <p>慢速下载，需要客户端</p>
                     <div class="download-info">
                         <a href="#" class="download-link baidu-download" target="_blank">
                             前往下载
                         </a>
-                        <div class="extract-code">
-                            提取码: <span class="baidu-code">填写提取码</span>
-                        </div>
+                        <div class="extract-code copy-code" data-code="填写提取码">
+							提取码 : <span class="baidu-code">填写提取码</span>
+						</div>
                     </div>
                 </div>
                 
                 <!-- 123云盘选项 -->
                 <div class="download-option" id="cloud123-option">
                     <h4><i class="fas fa-cloud-download-alt"></i> 123云盘</h4>
-                    <p>高速下载不限速，无需客户端</p>
+                    <p>高速下载，无需客户端</p>
                     <div class="download-info">
                         <a href="#" class="download-link cloud123-download" target="_blank">
                             前往下载
                         </a>
-                        <div class="extract-code">
-                            提取码: <span class="cloud123-code">填写提取码</span>
-                        </div>
+                        <div class="extract-code copy-code" data-code="填写提取码">
+							提取码 : <span class="cloud123-code">填写提取码</span>
+						</div>
                     </div>
                 </div>
             </div>
@@ -907,187 +994,217 @@
 
 
 	<script>
-    // 页面切换功能
-    document.addEventListener('DOMContentLoaded', function() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        const switchLinks = document.querySelectorAll('.switch-page');
-        const pages = document.querySelectorAll('.page');
-        
-        // 切换页面函数
-        function switchPage(pageId) {
-            pages.forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if(link.getAttribute('data-page') === pageId) {
-                    link.classList.add('active');
-                }
-            });
-            
-            // 滚动到顶部
-            window.scrollTo(0, 0);
-        }
-        
-        // 导航链接点击事件
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const pageId = this.getAttribute('data-page');
-                switchPage(pageId);
-            });
-        });
-        
-        // 页面内链接点击事件 - 修复页面切换
-        switchLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                // 检查是否是介绍视频链接
-                if(this.classList.contains('video-link')) {
-                    // 视频链接直接打开，不处理页面切换
-                    return;
-                }
-            
-                e.preventDefault();
-                const pageId = this.getAttribute('data-page');
-                switchPage(pageId);
-            });
-        });
-        
-        // 下载选项弹窗
-        const downloadBtns = document.querySelectorAll('.show-download-options');
-        const modalOverlay = document.querySelector('.modal-overlay');
-        const closeModal = document.querySelector('.close-modal');
-        
-        // 获取下载选项容器
-        const directOption = document.getElementById('direct-option');
-        const baiduOption = document.getElementById('baidu-option');
-        const cloud123Option = document.getElementById('cloud123-option');
-        
-        // 用于存储原始下载选项模板
-        const originalDirectOption = directOption.innerHTML;
-        
-        downloadBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // 获取当前资源包信息
-                const card = this.closest('.resource-card');
-                const version = card.getAttribute('data-version');
-                const downloadLinks = JSON.parse(card.getAttribute('data-download-links'));
-                
-                // 恢复直链下载容器到原始状态
-                directOption.innerHTML = originalDirectOption;
-                
-                // 获取直链下载容器
-                const directDownloadContainer = directOption.querySelector('.download-info');
-                
-                // 清除现有内容
-                directDownloadContainer.innerHTML = '';
-                
-                // 处理直链下载选项
-                if (Array.isArray(downloadLinks.direct)) {
-                    // 创建选择框容器
-                    const selectContainer = document.createElement('div');
-                    selectContainer.className = 'download-selection';
-                    
-                    // 创建下拉选择框
-                    const select = document.createElement('select');
-                    select.className = 'download-select';
-                    
-                    downloadLinks.direct.forEach((link, index) => {
-                        const option = document.createElement('option');
-                        option.value = link.url;
-                        option.textContent = link.name || `下载文件 ${index + 1}`;
-                        select.appendChild(option);
-                    });
-                    
-                    // 创建下载按钮
-                    const downloadButton = document.createElement('a');
-                    downloadButton.className = 'download-link full-width-btn';
-                    downloadButton.target = '_blank';
-                    downloadButton.textContent = '立即下载';
-                    
-                    // 设置默认选择
-                    downloadButton.href = select.options[0].value;
-                    
-                    // 当下拉菜单变化时更新下载链接
-                    select.addEventListener('change', function() {
-                        downloadButton.href = this.value;
-                    });
-                    
-                    // 将元素添加到容器
-                    selectContainer.appendChild(select);
-                    directDownloadContainer.appendChild(selectContainer);
-                    directDownloadContainer.appendChild(downloadButton);
-                } else {
-                    // 单个直链文件 - 显示简单下载按钮
-                    const downloadButton = document.createElement('a');
-                    downloadButton.className = 'download-link full-width-btn';
-                    downloadButton.href = downloadLinks.direct;
-                    downloadButton.target = '_blank';
-                    downloadButton.textContent = '立即下载';
-                    
-                    directDownloadContainer.appendChild(downloadButton);
-                }
-                
-                // 更新百度网盘信息 - 修复选择器
-                const baiduDownloadLink = baiduOption.querySelector('.download-link.baidu-download');
-                const baiduCodeSpan = baiduOption.querySelector('.baidu-code');
-                baiduDownloadLink.href = downloadLinks.baidu.url;
-                baiduCodeSpan.textContent = downloadLinks.baidu.code;
-                
-                // 更新123云盘信息 - 修复选择器
-                const cloud123DownloadLink = cloud123Option.querySelector('.download-link.cloud123-download');
-                const cloud123CodeSpan = cloud123Option.querySelector('.cloud123-code');
-                cloud123DownloadLink.href = downloadLinks.cloud123.url;
-                cloud123CodeSpan.textContent = downloadLinks.cloud123.code;
-                
-                // 根据版本显示不同的下载选项 - 修复版本判断逻辑
-                if (version.startsWith("1.20") || version === "1.21.x" || version === "old") {
-                    // 仅显示直链下载
-                    baiduOption.style.display = 'none';
-                    cloud123Option.style.display = 'none';
-                } else {
-                    // 显示所有选项
-                    baiduOption.style.display = 'block';
-                    cloud123Option.style.display = 'block';
-                }
-                
-                modalOverlay.classList.add('active');
-            });
-        });
-        
-        // 关闭弹窗
-        closeModal.addEventListener('click', function() {
-            modalOverlay.classList.remove('active');
-        });
-        
-        // 点击弹窗外部关闭
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove('active');
-            }
-        });
-        
-        // 添加页面切换动画效果
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = 1;
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        document.querySelectorAll('.resource-card').forEach(card => {
-            card.style.opacity = 0;
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(card);
-        });
-    });
+		// 页面切换功能
+		document.addEventListener('DOMContentLoaded', function() {
+			const navLinks = document.querySelectorAll('.nav-link');
+			const switchLinks = document.querySelectorAll('.switch-page');
+			const pages = document.querySelectorAll('.page');
+
+			// 创建复制提示元素
+			const copyNotification = document.createElement('div');
+			copyNotification.className = 'copy-notification';
+			copyNotification.textContent = '提取码已复制到剪贴板！';
+			document.body.appendChild(copyNotification);
+
+			// 添加提取码复制功能
+			document.querySelectorAll('.copy-code').forEach(element => {
+				element.addEventListener('click', function() {
+					const code = this.getAttribute('data-code');
+					
+					// 复制到剪贴板
+					navigator.clipboard.writeText(code).then(() => {
+						// 显示复制成功提示
+						copyNotification.style.display = 'block';
+						setTimeout(() => {
+							copyNotification.style.display = 'none';
+						}, 1500);
+					}).catch(err => {
+						console.error('复制失败:', err);
+					});
+				});
+			});
+			
+			// 切换页面函数
+			function switchPage(pageId) {
+				pages.forEach(page => {
+					page.classList.remove('active');
+				});
+				document.getElementById(pageId).classList.add('active');
+				
+				navLinks.forEach(link => {
+					link.classList.remove('active');
+					if(link.getAttribute('data-page') === pageId) {
+						link.classList.add('active');
+					}
+				});
+				
+				// 滚动到顶部
+				window.scrollTo(0, 0);
+			}
+			
+			// 导航链接点击事件
+			navLinks.forEach(link => {
+				link.addEventListener('click', function(e) {
+					e.preventDefault();
+					const pageId = this.getAttribute('data-page');
+					switchPage(pageId);
+				});
+			});
+			
+			// 页面内链接点击事件
+			switchLinks.forEach(link => {
+				link.addEventListener('click', function(e) {
+					// 检查是否是介绍视频链接
+					if(this.classList.contains('video-link')) {
+						// 视频链接直接打开，不处理页面切换
+						return;
+					}
+				
+					e.preventDefault();
+					const pageId = this.getAttribute('data-page');
+					switchPage(pageId);
+				});
+			});
+			
+			// 下载选项弹窗
+			const downloadBtns = document.querySelectorAll('.show-download-options');
+			const modalOverlay = document.querySelector('.modal-overlay');
+			const closeModal = document.querySelector('.close-modal');
+			
+			// 获取下载选项容器
+			const directOption = document.getElementById('direct-option');
+			const baiduOption = document.getElementById('baidu-option');
+			const cloud123Option = document.getElementById('cloud123-option');
+			
+			// 用于存储原始下载选项模板
+			const originalDirectOption = directOption.innerHTML;
+			
+			downloadBtns.forEach(btn => {
+				btn.addEventListener('click', function(e) {
+					e.preventDefault();
+					
+					// 获取当前资源包信息
+					const card = this.closest('.resource-card');
+					const version = card.getAttribute('data-version');
+					const downloadLinks = JSON.parse(card.getAttribute('data-download-links'));
+					
+					// 恢复直链下载容器到原始状态
+					directOption.innerHTML = originalDirectOption;
+					
+					// 获取直链下载容器
+					const directDownloadContainer = directOption.querySelector('.download-info');
+					
+					// 清除现有内容
+					directDownloadContainer.innerHTML = '';
+					
+					// 处理直链下载选项
+					if (Array.isArray(downloadLinks.direct)) {
+						// 创建选择框容器
+						const selectContainer = document.createElement('div');
+						selectContainer.className = 'download-selection';
+						
+						// 创建下拉选择框
+						const select = document.createElement('select');
+						select.className = 'download-select';
+						
+						downloadLinks.direct.forEach((link, index) => {
+							const option = document.createElement('option');
+							option.value = link.url;
+							option.textContent = link.name || `下载文件 ${index + 1}`;
+							select.appendChild(option);
+						});
+						
+						// 创建下载按钮
+						const downloadButton = document.createElement('a');
+						downloadButton.className = 'download-link full-width-btn';
+						downloadButton.target = '_blank';
+						downloadButton.textContent = '立即下载';
+						
+						// 设置默认选择
+						downloadButton.href = select.options[0].value;
+						
+						// 当下拉菜单变化时更新下载链接
+						select.addEventListener('change', function() {
+							downloadButton.href = this.value;
+						});
+						
+						// 将元素添加到容器
+						selectContainer.appendChild(select);
+						directDownloadContainer.appendChild(selectContainer);
+						directDownloadContainer.appendChild(downloadButton);
+					} else {
+						// 单个直链文件 - 显示简单下载按钮
+						const downloadButton = document.createElement('a');
+						downloadButton.className = 'download-link full-width-btn';
+						downloadButton.href = downloadLinks.direct;
+						downloadButton.target = '_blank';
+						downloadButton.textContent = '立即下载';
+						
+						directDownloadContainer.appendChild(downloadButton);
+					}
+					
+					// 更新百度网盘信息
+					const baiduDownloadLink = baiduOption.querySelector('.download-link.baidu-download');
+					const baiduCodeSpan = baiduOption.querySelector('.baidu-code');
+					const baiduCopyCode = baiduOption.querySelector('.copy-code');
+					
+					baiduDownloadLink.href = downloadLinks.baidu.url;
+					baiduCodeSpan.textContent = downloadLinks.baidu.code;
+					baiduCopyCode.setAttribute('data-code', downloadLinks.baidu.code);
+					
+					// 更新123云盘信息
+					const cloud123DownloadLink = cloud123Option.querySelector('.download-link.cloud123-download');
+					const cloud123CodeSpan = cloud123Option.querySelector('.cloud123-code');
+					const cloud123CopyCode = cloud123Option.querySelector('.copy-code');
+					
+					cloud123DownloadLink.href = downloadLinks.cloud123.url;
+					cloud123CodeSpan.textContent = downloadLinks.cloud123.code;
+					cloud123CopyCode.setAttribute('data-code', downloadLinks.cloud123.code);
+					
+					// 根据版本显示不同的下载选项
+					if (version.startsWith("1.20") || version === "1.21.x" || version === "old") {
+						// 仅显示直链下载
+						baiduOption.style.display = 'none';
+						cloud123Option.style.display = 'none';
+					} else {
+						// 显示所有选项
+						baiduOption.style.display = 'block';
+						cloud123Option.style.display = 'block';
+					}
+					
+					modalOverlay.classList.add('active');
+				});
+			});
+			
+			// 关闭弹窗
+			closeModal.addEventListener('click', function() {
+				modalOverlay.classList.remove('active');
+			});
+			
+			// 点击弹窗外部关闭
+			modalOverlay.addEventListener('click', function(e) {
+				if (e.target === modalOverlay) {
+					modalOverlay.classList.remove('active');
+				}
+			});
+			
+			// 添加页面切换动画效果
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.style.opacity = 1;
+						entry.target.style.transform = 'translateY(0)';
+					}
+				});
+			}, { threshold: 0.1 });
+			
+			document.querySelectorAll('.resource-card').forEach(card => {
+				card.style.opacity = 0;
+				card.style.transform = 'translateY(20px)';
+				card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+				observer.observe(card);
+			});
+		});
 	</script>
 
 </body>
